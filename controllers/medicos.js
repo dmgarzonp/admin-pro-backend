@@ -16,7 +16,7 @@ const getMedicos = async(req, res = response) => {
     })
 }
 
-
+// Para crear nuevo medico
 const crearMedico = async(req, res = response) => {
 
     //Obtener el id del medicos
@@ -54,21 +54,83 @@ try {
 
 }
 
+// Para Actualizar medico
+const actualizarMedico = async (req, res = response) => {
 
-const actualizarMedico = (req, res = response) => {
+    const id = req.params.id;
+    const uid = req.uid;
 
-    res.json({
-        ok: true,
-        msg: 'actualizar medico'
-    })
+
+
+    try {
+
+        //Buscar por id de medico
+        const medico = await Medico.findById( id );
+
+        //comprobar si el medico existe
+        if (!medico) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'medico no encontrado'
+            })
+        }
+
+        //Los campos a ser cambiados
+        const cambiosMedico = {
+            ...req.body,
+            usuario: uid
+        }
+
+        //Actualizar medico
+        const medicoActualizado = await Medico.findByIdAndUpdate( id, cambiosMedico, { new: true });
+
+        res.json({
+            ok: true,
+            medico: medicoActualizado
+        })
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Comuniquese con el administrador'
+        });
+    };   
 }
 
-const borrarMedico = (req, res = response) => {
 
-    res.json({
-        ok: true,
-        msg: 'borrar medico'
-    })
+// Para Borra medico
+const borrarMedico = async (req, res = response) => {
+
+    const id = req.params.id;  
+
+    try {
+  
+      const medico = await Medico.findById( id );
+  
+      if (!medico) {      
+        return res.status(404).json({
+          ok: false,
+          msg: "Medico no encontrado por ID",
+         
+        });
+      }
+      
+      await Medico.findByIdAndDelete( id );    
+  
+      res.json({
+        ok: true,      
+        msg: 'medico eliminado'
+      });
+      
+     
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({
+        ok: false,
+        msg: 'Contactese con el administrador'
+      })
+    }
 }
 
 
