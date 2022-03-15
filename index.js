@@ -21,7 +21,8 @@ app.use(express.json());
 //Base de Datos de Datos 
 conectionDB();
 
-
+//Directorio Publico
+app.use(express.static('public'));
 
 //Rutas
 app.use('/api/usuarios', require('./routes/usuarios'));
