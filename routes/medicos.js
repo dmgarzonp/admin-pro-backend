@@ -14,12 +14,14 @@ const {
   crearMedico,
   actualizarMedico,
   borrarMedico,
+  getMedicosById
+
 } = require("../controllers/medicos");
 
 const router = Router();
 
 // Ruta para obtener todos los usuario
-router.get("/", getMedicos);
+router.get("/", validarJWT, getMedicos);
 
 //Ruta para crear usuario
 router.post(
@@ -34,9 +36,10 @@ router.post(
   crearMedico
 );
 
+
+
 //Ruta para Actualizar usuarios
-router.put( "/:id",
-[
+router.put( "/:id",[
   validarJWT,
   check("nombre", "El nombre del medico es obligatorio").not().isEmpty(),
   //Validavion de id mongo .isMongoId(),
@@ -46,7 +49,21 @@ router.put( "/:id",
   actualizarMedico
 );
 
+
+
 // ruta para borrar usuario
-router.delete("/:id", validarJWT,borrarMedico);
+router.delete("/:id", 
+        validarJWT,
+        borrarMedico
+
+);
+
+
+
+router.get("/:id", 
+        validarJWT,
+        getMedicosById
+
+);
 
 module.exports = router;
